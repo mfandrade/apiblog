@@ -1,12 +1,11 @@
-ifdef ENV
-$(shell mv .env.($ENV) .env)
-endif
+ENV?=local
 
-do:
+do: .env.local .env.production
+	ln -sf .env.$(ENV) .env
 	docker-compose down
 	docker rmi -f apiblog-app
 	docker image prune -f -a
 	docker-compose up -d
 
 shell: do
-	docker-compose --env-file $(ENVFILE) exec -it app bash
+	docker-compose exec -it app bash
