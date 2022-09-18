@@ -11,7 +11,7 @@ shell: .env
 	docker-compose exec -it app bash
 
 test-db: .env
-	docker-compose exec -it $(DB_HOST) mysql -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE)
+	docker-compose exec -it $(DB_HOST) mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
 
 dump: .env
 	docker-compose exec -it $(DB_HOST) mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee mysqldump.sql
