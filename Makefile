@@ -7,5 +7,5 @@ do: .env.local .env.production
 	docker image prune -f -a
 	docker-compose up -d
 
-shell: do
+shell: 
 	docker-compose exec -it app bash
