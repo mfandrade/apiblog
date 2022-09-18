@@ -23,8 +23,10 @@ WORKDIR /srv/laravel
 COPY --from=build /app/ .
 
 RUN chgrp -R www-data . && \
-    chmod -R g+w storage/* && \
-    a2enmod rewrite
+    chmod -R 6775 storage/* && \
+    a2enmod rewrite && \
+    a2dissite 000-default && \
+    a2ensite laravel
 
 RUN php artisan config:cache && \
     php artisan route:cache
