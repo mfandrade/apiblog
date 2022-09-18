@@ -1,7 +1,7 @@
-ifndef APP_ENV
+ifndef ENV
 ENVFILE=.env
 else
-ENVFILE=.env.$(APP_ENV)
+ENVFILE=.env.$(ENV)
 endif
 
 do:
@@ -9,7 +9,7 @@ do:
 	docker-compose --env-file $(ENVFILE) down
 	docker rmi -f apiblog-app
 	docker image prune -f -a
-	docker-compose --env-file $(ENVFILE) up -d
+	docker-compose --env-file $(ENVFILE) up --force-recreate -d
 
 shell: do
 	docker-compose --env-file $(ENVFILE) exec -it app bash

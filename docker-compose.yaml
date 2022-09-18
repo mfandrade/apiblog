@@ -5,9 +5,8 @@ services:
   app:
     build:
       context: .
-    environment:
-      - APP_ENV=devel
-      - APP_DEBUG=true
+      args:
+        - ENV=${ENV}
     restart: unless-stopped
     ports:
       - 8000:80
