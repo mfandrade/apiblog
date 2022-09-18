@@ -10,7 +10,7 @@ services:
       - laravel.app:127.0.0.1
       - www.laravel.app:127.0.0.1
     ports:
-      - 8000:80
+      - 8000:8000
     networks:
       - localnet
     depends_on:
