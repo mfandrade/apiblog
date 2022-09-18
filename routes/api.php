@@ -1,11 +1,10 @@
 <?php
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PostController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\CommentsController;
+use App\Http\Controllers\PostsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function() {
     return 'API is up and running...';
 });
-Route::apiResource('post', PostController::class);
-Route::apiResource('comment', CommentController::class);
+Route::apiResource('post', PostsController::class);
+Route::apiResource('comment', CommentsController::class);
