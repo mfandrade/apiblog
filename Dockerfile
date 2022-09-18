@@ -26,10 +26,10 @@ WORKDIR /var/www/html/
 COPY --from=build /app/ .
 COPY .env.production .env
 
-RUN chown -R www-data:www-data /var/www/ && \
-    chmod -R +w storage && \
-    a2enmod rewrite 
+RUN chgrp -R www-data /var/www/ && \
+    chmod -R g+w storage && \
+    a2enmod rewrite
 
 RUN php artisan config:cache && \
-    php artisan route:cache && \
-    php artisan migrate
+    php artisan route:cache
+
