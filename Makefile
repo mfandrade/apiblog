@@ -15,4 +15,5 @@ test-db: .env
 	docker-compose exec -it $(DB_HOST) mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
 
 test-api:
-	links -dump laravel.app:8000/api/posts | less
+	php artisan route:list
+	links -dump $(APP_URL)/api/posts/hello | head
