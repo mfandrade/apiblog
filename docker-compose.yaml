@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+
+  app:
+    build:
+      context: .
+    environment:
+      - APP_ENV=devel
+      - APP_DEBUG=true
+    restart: unless-stopped
+    ports:
+      - 8000:80
+    volumes:
+      - ./src:/var/www
+    networks:
+      - localnet
+    depends_on:
+      - db
+
+  db:
+    image: mysql:8
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_DATABASE=${DB_DATABASE}
+    restart: always
+    ports:
+      - ${FORWARD_DB_PORT:-3306}:3306
+    networks:
+      - localnet
+    volumes:
+      - mysqldata:/var/lib/mysql
+
+networks:
+  localnet:
+    driver: bridge
+
+volumes:
+  mysqldata:
