@@ -18,8 +18,8 @@ ENV APP_DEBUG=false
 RUN docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install pdo pdo_mysql
 
-COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
-COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY .infra/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
+COPY .infra/000-default.conf /etc/apache2/sites-available/000-default.conf
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html/

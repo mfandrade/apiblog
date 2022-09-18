@@ -32,6 +32,7 @@ services:
       - localnet
     volumes:
       - mysqldata:/var/lib/mysql
+      - .infra/database.sql:/docker-entrypoint-initdb.d/database.sql
 
 networks:
   localnet:
