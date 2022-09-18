@@ -17,8 +17,7 @@ RUN docker-php-ext-configure opcache --enable-opcache && \
 
 COPY .infra/opcache.ini /usr/local/etc/php/conf.d/
 COPY .infra/laravel.conf /etc/apache2/sites-available/
-RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf && \
-    echo '127.0.0.1 laravel.app' >> /etc/hosts
+RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 WORKDIR /srv/laravel
 COPY --from=build /app/ .

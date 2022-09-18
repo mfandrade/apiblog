@@ -6,6 +6,9 @@ services:
     build:
       context: .
     restart: unless-stopped
+    extra_hosts:
+      - laravel.app:127.0.0.1
+      - www.laravel.app:127.0.0.1
     ports:
       - 8000:80
     networks:
