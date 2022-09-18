@@ -28,13 +28,7 @@ services:
       - ${FORWARD_DB_PORT:-3306}:3306
     networks:
       - localnet
-    volumes:
-      - mysqldata:/var/lib/mysql
-      - .infra/sql/:/docker-entrypoint-initdb.d/
 
 networks:
   localnet:
     driver: bridge
-
-volumes:
-  mysqldata:
