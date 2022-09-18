@@ -15,15 +15,15 @@ FROM php:8-apache
 RUN docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install pdo pdo_mysql
 
-COPY .infra/opcache.ini /usr/local/etc/php/conf.d/opcache.ini
-COPY .infra/000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY .infra/opcache.ini /usr/local/etc/php/conf.d/
+COPY .infra/laravel.conf /etc/apache2/sites-available/
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-WORKDIR /var/www/html/
+WORKDIR /srv/laravel
 COPY --from=build /app/ .
 
-RUN chgrp -R www-data /var/www/ && \
-    chmod -R g+w storage && \
+RUN chgrp -R www-data . && \
+    chmod -R g+w storage/cache/ && \
     a2enmod rewrite
 
 RUN php artisan config:cache && \
