@@ -23,7 +23,7 @@ WORKDIR /srv/laravel
 COPY --from=build /app/ .
 
 RUN chgrp -R www-data . && \
-    chmod -R g+w storage/cache/ && \
+    chmod -R g+w storage/* && \
     a2enmod rewrite
 
 RUN php artisan config:cache && \
