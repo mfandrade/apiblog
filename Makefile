@@ -14,6 +14,15 @@ shell:
 test-db: .env
 	docker-compose exec -it $(DB_HOST) mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
 
+mysqldump: .env
+	docker-compose exec -it $(DB_HOST) mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee mysqldump.sql
+
 test-api:
+	php artisan route:clear
 	php artisan route:list
+	#curl -sL $(APP_URL)/api | head 
+	#curl -sL $(APP_URL)/api/posts | head 
+	#curl -sL $(APP_URL)/api/posts/1 | head 
+	links -dump $(APP_URL)/api | head
 	links -dump $(APP_URL)/api/posts | head
+	links -dump $(APP_URL)/api/posts/1 | head
