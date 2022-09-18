@@ -24,9 +24,9 @@ RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 COPY --from=build /app /var/www/html
 COPY .env.production /var/www/html/.env
-#
-#RUN php artisan config:cache && \
-#    php artisan route:cache && \
-#    chown -R www-data:www-data . && \
-#    chmod +w -R storage && \
-#    a2enmod rewrite
+
+RUN php artisan config:cache && \
+    php artisan route:cache && \
+    chown -R www-data:www-data . && \
+    chmod +w -R storage && \
+    a2enmod rewrite
