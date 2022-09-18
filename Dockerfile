@@ -12,9 +12,6 @@ RUN composer install \
 
 FROM php:8-apache
 
-ENV APP_ENV=production
-ENV APP_DEBUG=false
-
 RUN docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install pdo pdo_mysql
 
@@ -24,7 +21,6 @@ RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 WORKDIR /var/www/html/
 COPY --from=build /app/ .
-COPY .env.production .env
 
 RUN chgrp -R www-data /var/www/ && \
     chmod -R g+w storage && \
