@@ -5,16 +5,11 @@ ENVFILE=.env.$(APP_ENV)
 endif
 
 do:
-	docker-compose down
+	@echo "INFO: Using $(ENVFILE)\n"
+	docker-compose --env-file $(ENVFILE) down
 	docker rmi -f apiblog-app
 	docker image prune -f -a
 	docker-compose --env-file $(ENVFILE) up -d
 
 shell: do
-	docker-compose exec -it app bash
-
-build:
-	docker-compose exec app pwd && \
-	echo --- && \
-	docker-compose exec app /app
-
+	docker-compose --env-file $(ENVFILE) exec -it app bash
