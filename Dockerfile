@@ -1,8 +1,8 @@
 # https://www.honeybadger.io/blog/laravel-docker-php/
-FROM composer:2 as installer
+FROM composer:2 as build
 
 WORKDIR /app
-COPY src .
+COPY . .
 RUN composer install \
         --prefer-dist \
         --no-dev \
@@ -22,9 +22,8 @@ COPY opcache.ini /usr/local/etc/php/conf.d/opcache.ini
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
-WORKDIR /var/www/html
-COPY --from=installer /app .
-COPY src/.env.production .env
+COPY --from=build /app /var/www/html
+COPY .env.production /var/www/html/.env
 #
 #RUN php artisan config:cache && \
 #    php artisan route:cache && \
