@@ -1,23 +1,22 @@
 ENV?=local
 include .env.$(ENV)
 
-do: .env.local .env.production
-	ln -sf .env.$(ENV) .env
-	docker-compose down
+do: setup
+	docker-compose down -v
 	docker rmi -f apiblog-app
 	docker image prune -f -a
 	docker-compose up -d
 
-shell:
+shell: .env
 	docker-compose exec -it app bash
 
 test-db: .env
-	docker-compose exec -it $(DB_HOST) mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
+	docker-compose exec -it $(DB_HOST) mysql -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE)
 
-mysqldump: .env
+dump: .env
 	docker-compose exec -it $(DB_HOST) mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee mysqldump.sql
 
-test-api:
+test-api: .env
 	php artisan route:clear
 	php artisan route:list
 	#curl -sL $(APP_URL)/api | head 
@@ -26,3 +25,7 @@ test-api:
 	links -dump $(APP_URL)/api | head
 	links -dump $(APP_URL)/api/posts | head
 	links -dump $(APP_URL)/api/posts/1 | head
+
+setup: .env.local .env.production
+	rm .env && cp -f .env.$(ENV) .env
+
