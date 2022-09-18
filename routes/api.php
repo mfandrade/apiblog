@@ -6,11 +6,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function() {
     return 'API is up and running...';
 });
-Route::apiResource('posts', PostsController::class)
-  ->except(['index']);
-
-Route::get('/posts/index', function() {
-  return 'blablabla';
-})->name('posts.index');
-
+Route::apiResource('posts', PostsController::class);
 Route::apiResource('comments', CommentsController::class);

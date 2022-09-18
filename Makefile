@@ -16,4 +16,4 @@ test-db: .env
 
 test-api:
 	php artisan route:list
-	links -dump $(APP_URL)/api/posts/hello | head
+	links -dump $(APP_URL)/api/posts | head
