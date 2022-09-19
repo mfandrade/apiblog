@@ -11,9 +11,4 @@ class CommentRequest extends FormRequest
             'text' => 'required'
         ];
     }
-
-    public function authorize()
-    {
-        return true;
-    }
 }

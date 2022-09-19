@@ -12,9 +12,4 @@ class PostRequest extends FormRequest
             'body' => 'required'
         ];
     }
-
-    public function authorize()
-    {
-        return true;
-    }
 }
