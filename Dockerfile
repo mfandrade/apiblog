@@ -20,7 +20,7 @@ COPY .infra/laravel.conf /etc/apache2/sites-available/
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 WORKDIR /srv/laravel
-COPY --from=build --chown 1000:www-data /app/ .
+COPY --from=build --chown=1000:www-data /app/ .
 
 RUN a2enmod rewrite && \
     a2dissite 000-default && \

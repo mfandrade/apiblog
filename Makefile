@@ -10,22 +10,25 @@ do: setup
 shell: .env
 	docker-compose exec -it app bash
 
+wait=2 # until mysql be up and running
 test-db: .env
-	@sleep 2 && \
+	@sleep $(wait) && \
 	docker-compose exec -it $(DB_HOST) \
 	mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
 
 SQL?=SHOW TABLES;
 test-sql: .env
-	@sleep 2 && \
+	@sleep $(wait) && \
 	docker-compose exec $(DB_HOST) \
 	mysql -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE) \
 		-e '$(SQL)' 2>/dev/null
 
 dump: .env
+	@sleep $(wait) && \
 	docker-compose exec -it $(DB_HOST) mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee mysqldump.sql
 
 test-api: .env
+	@sleep $(wait)
 	php artisan route:clear
 	php artisan route:list
 	#curl -sL $(APP_URL)/api | head 
