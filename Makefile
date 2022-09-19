@@ -11,11 +11,14 @@ shell: .env
 	docker-compose exec -it app bash
 
 test-db: .env
+	@sleep 2 && \
 	docker-compose exec -it $(DB_HOST) \
 	mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
 
+SQL?=SHOW TABLES;
 test-sql: .env
-	@docker-compose exec -it $(DB_HOST) \
+	@sleep 2 && \
+	docker-compose exec $(DB_HOST) \
 	mysql -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE) \
 		-e '$(SQL)' 2>/dev/null
 
