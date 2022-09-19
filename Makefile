@@ -10,7 +10,7 @@ do: setup
 shell: .env
 	docker-compose exec -it app bash
 
-wait=2 # until mysql be up and running
+wait=3 # until mysql be up and running
 test-db: .env
 	@sleep $(wait) && \
 	docker-compose exec -it $(DB_HOST) \
