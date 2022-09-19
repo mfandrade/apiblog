@@ -23,7 +23,7 @@ WORKDIR /srv/laravel
 COPY --from=build /app/ .
 
 RUN chgrp -R www-data . && \
-    chmod -R 6775 storage/* && \
+    chmod -R 6775 storage/* && find storage/ -type f -exec chmod 640 {} \+ && \
     a2enmod rewrite && \
     a2dissite 000-default && \
     a2ensite laravel
