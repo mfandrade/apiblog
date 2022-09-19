@@ -20,11 +20,9 @@ COPY .infra/laravel.conf /etc/apache2/sites-available/
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 WORKDIR /srv/laravel
-COPY --from=build /app/ .
+COPY --from=build --chown 1000:www-data /app/ .
 
-RUN chgrp -R www-data . && \
-    chmod -R 6775 storage/* && find storage/ -type f -exec chmod 640 {} \+ && \
-    a2enmod rewrite && \
+RUN a2enmod rewrite && \
     a2dissite 000-default && \
     a2ensite laravel
 
