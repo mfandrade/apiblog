@@ -12,14 +12,20 @@ class PostsController extends Controller
         return Post::all();
     }
 
-    public function store(PostRequest $request)
-    {
-        return Post::create($request->all());
-    }
-
     public function show(Post $post)
     {
         return Post::findOrFail($post->id);
+    }
+
+    public function destroy(Post $post)
+    {
+        $item = Post::findOrFail($post->id);
+        $item->delete();
+    }
+
+    public function store(PostRequest $request)
+    {
+        return Post::create($request->all());
     }
 
     public function update(PostRequest $request, Post $post)
@@ -29,11 +35,5 @@ class PostsController extends Controller
         $item->save();
 
         return $item;
-    }
-
-    public function destroy(Post $post)
-    {
-        $item = Post::findOrFail($post->id);
-        $item->delete();
     }
 }
