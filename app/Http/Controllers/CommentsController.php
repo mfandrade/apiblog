@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CommentRequest;
 use App\Models\Comment;
+use App\Models\Post;
 
 class CommentsController extends Controller
 {
@@ -35,5 +36,10 @@ class CommentsController extends Controller
     {
         $item = Comment::findOrFail($comment->id);
         $item->delete();
+    }
+
+    public function post(Comment $comment)
+    {
+        return $comment->post_id;
     }
 }
