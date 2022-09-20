@@ -10,6 +10,8 @@ services:
     extra_hosts:
       - laravel.app:127.0.0.1
       - www.laravel.app:127.0.0.1
+    volumes:
+      - /tmp:/tmp/OUTPUT
     ports:
       - 8000:8000
     networks:
