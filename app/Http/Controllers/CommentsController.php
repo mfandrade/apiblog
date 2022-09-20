@@ -40,6 +40,6 @@ class CommentsController extends Controller
 
     public function post(Comment $comment)
     {
-        return $comment->post_id;
+        return Post::findOrFail($comment->post_id);
     }
 }
