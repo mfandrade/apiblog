@@ -1,20 +1,20 @@
 ENV?=local
 include .env.$(ENV)
 
-.DEFAULT_GOAL := do
+.DEFAULT_GOAL := run
 
 setup: .env.local .env.production
 	@echo "INFO: Using .env.$(ENV)\n"
 	@rm -f .env && cp -f .env.$(ENV) .env
 
-do: setup
+run: setup ##- Run app locally with Apache2 and MySQL backend.
 	docker-compose down
 	@docker rmi -f apiblog-app 2>/dev/null
 	@docker container prune -f >/dev/null
 	@docker image prune -f -a >/dev/null
 	docker-compose up -d
 
-shell: .env
+shell: .env ##- A Bash shell into the app container.
 	docker-compose exec -it app bash
 
 seconds:=0 # dummy way to wait until mysql be up and running
@@ -34,10 +34,21 @@ dump: .env
 	@sleep $(seconds)
 	docker-compose exec -it $(DB_HOST) mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee mysqldump.sql
 
-test-api: .env
+test-api: .env ##- Simple HTTP get requests for posts and comments.
 	@php artisan route:clear
 	@php artisan route:list
 	@echo ----------------------------------------------------------------------
-	links -dump $(APP_URL)/api/comments/1/post
+	curl -sL $(APP_URL)/api/comments/1/post
 	@echo ----------------------------------------------------------------------
-	links -dump $(APP_URL)/api/posts/2/comments
+	curl -sL $(APP_URL)/api/posts/2/comments
+
+publish: run ##- Publish mfandrade/apiblog:latest to Docker HUB.
+	git push github --all
+	git push gitlab --all
+	docker push mfandrade/apiblog:latest
+
+help: ##- This message.
+	@echo 'USAGE: make <TARGET> [VARNAME=value]'
+	@echo
+	@echo 'TARGET can be:'
+	@sed -e '/#\{2\}-/!d; s/\\$$//; s/:[^#\t]*/\t- /; s/#\{2\}- *//' $(MAKEFILE_LIST)
