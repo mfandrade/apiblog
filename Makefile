@@ -43,8 +43,8 @@ test-api: .env ##- Simple HTTP get requests for posts and comments.
 	curl -sL $(APP_URL)/api/posts/2/comments
 
 publish: run ##- Publish mfandrade/apiblog:latest to Docker HUB.
-	git push github --all
-	git push gitlab --all
+	git push github main
+	git push gitlab main
 	docker push mfandrade/apiblog:latest
 
 help: ##- This message.
