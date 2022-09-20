@@ -7,12 +7,13 @@ setup: .env.local .env.production
 	@echo "INFO: Using .env.$(ENV)\n"
 	@rm -f .env && cp -f .env.$(ENV) .env
 
-run: setup ##- Run app locally with Apache2 and MySQL backend.
+cleanup: docker-compose.yaml
 	docker-compose down
-	@docker rmi -f apiblog-app 2>/dev/null
-	@docker rm -f apiblog-app-1 apiblog-sqlite 2>/dev/null
+	@docker rm -f apiblog-sqlite apiblog-app-1 2>/dev/null
 	@docker container prune -f >/dev/null
 	@docker image prune -f -a >/dev/null
+
+run: setup cleanup ##- Run app locally with Apache2 and MySQL backend.
 	docker-compose up -d
 
 shell: .env ##- A Bash shell into the app container.
