@@ -10,6 +10,7 @@ setup: .env.local .env.production
 run: setup ##- Run app locally with Apache2 and MySQL backend.
 	docker-compose down
 	@docker rmi -f apiblog-app 2>/dev/null
+	@docker rm -f apiblog-app-1 apiblog-sqlite 2>/dev/null
 	@docker container prune -f >/dev/null
 	@docker image prune -f -a >/dev/null
 	docker-compose up -d
