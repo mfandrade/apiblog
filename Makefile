@@ -17,7 +17,7 @@ do: setup
 shell: .env
 	docker-compose exec -it app bash
 
-seconds:=1 # dummy way to wait until mysql be up and running
+seconds:=0 # dummy way to wait until mysql be up and running
 test-db: .env
 	@sleep $(seconds)
 	docker-compose exec -it $(DB_HOST) \
@@ -37,5 +37,7 @@ dump: .env
 test-api: .env
 	@php artisan route:clear
 	@php artisan route:list
-	curl -sL $(APP_URL)/api/comments/1/post
-
+	@echo ----------------------------------------------------------------------
+	links -dump $(APP_URL)/api/comments/1/post
+	@echo ----------------------------------------------------------------------
+	links -dump $(APP_URL)/api/posts/2/comments
