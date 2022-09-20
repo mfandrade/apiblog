@@ -8,7 +8,7 @@ setup: .env.local .env.production
 	@rm -f .env && cp -f .env.$(ENV) .env
 
 do: setup
-	docker-compose down -v
+	docker-compose down
 	@docker rmi -f apiblog-app 2>/dev/null
 	@docker container prune -f >/dev/null
 	@docker image prune -f -a >/dev/null
@@ -17,29 +17,25 @@ do: setup
 shell: .env
 	docker-compose exec -it app bash
 
+seconds:=1 # dummy way to wait until mysql be up and running
 test-db: .env
+	@sleep $(seconds)
 	docker-compose exec -it $(DB_HOST) \
 	mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
 
 SQL?=SHOW TABLES;
 test-sql: .env
+	@sleep $(seconds)
 	docker-compose exec $(DB_HOST) \
 	mysql -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE) \
 		-e '$(SQL)' 2>/dev/null
 
 dump: .env
+	@sleep $(seconds)
 	docker-compose exec -it $(DB_HOST) mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee mysqldump.sql
 
 test-api: .env
-	php artisan route:clear
-	php artisan route:list
-	#curl -sL $(APP_URL)/api | head 
-	#curl -sL $(APP_URL)/api/posts | head 
-	#curl -sL $(APP_URL)/api/posts/1 | head 
-	links -dump $(APP_URL)/api | head
-	links -dump $(APP_URL)/api/posts | head
-	links -dump $(APP_URL)/api/posts/1 | head
+	@php artisan route:clear
+	@php artisan route:list
+	curl -sL $(APP_URL)/api/comments/1/post
 
-seconds=10 # dummy way to wait until mysql be up and running
-wait:
-	@sleep $(seconds)
