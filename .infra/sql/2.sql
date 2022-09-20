@@ -1,3 +1,5 @@
+-- INSERT TWO LINES IN TABLE posts
+-- ----------------------------------------------------------------------
 LOCK TABLES posts WRITE;
 INSERT INTO posts
 (

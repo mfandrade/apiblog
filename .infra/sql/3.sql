@@ -1,3 +1,5 @@
+-- INSERT A SINGLE DEMO LINE IN TABLE comments
+-- ----------------------------------------------------------------------
 LOCK TABLES comments WRITE;
 INSERT INTO comments
 (

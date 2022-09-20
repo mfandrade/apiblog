@@ -1,3 +1,5 @@
+-- CREATE POSTS AND COMMENTS TABLES
+-- ----------------------------------------------------------------------
 DROP TABLE IF EXISTS posts;
 CREATE TABLE posts
 (
