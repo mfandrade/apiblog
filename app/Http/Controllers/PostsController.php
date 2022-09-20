@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PostRequest;
 use App\Models\Post;
+use App\Models\Comment;
 
 class PostsController extends Controller
 {
@@ -35,5 +36,10 @@ class PostsController extends Controller
         $item->save();
 
         return $item;
+    }
+
+    public function comments(Post $post)
+    {
+        return Comment::whereBelongsTo($post)->get();
     }
 }

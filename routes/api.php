@@ -8,4 +8,5 @@ Route::get('/', function() {
 });
 Route::apiResource('posts', PostsController::class);
 Route::apiResource('comments', CommentsController::class);
+Route::get('posts/{post}/comments', [PostsController::class, 'comments']);
 Route::get('comments/{comment}/post', [CommentsController::class, 'post']);
