@@ -18,8 +18,8 @@ practices, automation and hosting on cloud servers.
 The API consists in a MVC application (well, tecnically without
 views) written in Laravel 9.  It represents the very core essence
 of a blog with only two models: [Post](app/Models/Post.php) and
-[Comment](app/Models/Comment).  A post can have many comments but a
-comment belong to only one post.
+[Comment](app/Models/Comment.php).  A post can have many comments but
+a comment belong to only one post.
 
 There are a couple of sample data populated to those models via
 migrations.  We can view those data [acessing this API](TESTING.md)
