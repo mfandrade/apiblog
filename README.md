@@ -1,3 +1,4 @@
+![apiblog](https://gitlab.com/uploads/-/system/project/avatar/39576926/apiblog.png?width=64)
 # apiblog - A simple blog api for demo purposes
 
 [![Deployed at AWS](https://img.shields.io/website-up-down-green-red/http/stack-ecsal-ad2c33tf7ncr-2140941407.us-east-1.elb.amazonaws.com.svg)]( http://stack-ecsal-ad2c33tf7ncr-2140941407.us-east-1.elb.amazonaws.com/api/posts/2/comments)
@@ -24,7 +25,7 @@ There are a couple of sample data populated to those models via
 migrations.  We can view those data [acessing this API](TESTING.md)
 via REST.
 
-###### KEYWORDS: api, laravel, php, mvc, sqlite, mysql, devops, ci, ci/cd, gitlab-ci, aws, amazon, cloud, cloudcomputing, terraform, cloudformation, microservices
+###### KEYWORDS: **api, laravel, php, mvc, sqlite, mysql, devops, ci, ci/cd, gitlab-ci, aws, amazon, cloud, cloudcomputing, terraform, cloudformation, microservices**
 
 ----------
 # tl;dr
@@ -32,11 +33,7 @@ via REST.
 ```bash
 $ git clone git@github.com:mfandrade/apiblog.git
 $ cd apiblog
-<<<<<<< HEAD
-$ make run
-=======
 $ make
->>>>>>> feat/docs
 ```
 
 ----------
