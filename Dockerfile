@@ -15,8 +15,8 @@ FROM php:8-apache
 RUN docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install pdo pdo_mysql
 
-COPY .infra/opcache.ini /usr/local/etc/php/conf.d/
-COPY .infra/laravel.conf /etc/apache2/sites-available/
+COPY files/opcache.ini /usr/local/etc/php/conf.d/
+COPY files/laravel.conf /etc/apache2/sites-available/
 RUN echo 'ServerName localhost' >> /etc/apache2/apache2.conf
 
 WORKDIR /srv/laravel
