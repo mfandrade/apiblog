@@ -2,7 +2,7 @@
 FROM composer:2 as build
 
 WORKDIR /app/
-COPY . .
+COPY src/ .
 RUN composer install \
         --prefer-dist \
         --no-dev \

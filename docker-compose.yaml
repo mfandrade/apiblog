@@ -4,8 +4,7 @@ services:
 
   app:
     image: mfandrade/apiblog:latest
-    build:
-      context: src/
+    build: .
     restart: unless-stopped
     extra_hosts:
       - laravel.app:127.0.0.1
