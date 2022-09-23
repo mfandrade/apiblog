@@ -23,7 +23,10 @@ services:
       - MYSQL_DATABASE=${DB_DATABASE}
       - MYSQL_USER=${DB_USERNAME}
       - MYSQL_PASSWORD=${DB_PASSWORD}
-    restart: always
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 10s
+      retries: 3
     volumes:
       - ./files/sql/:/docker-entrypoint-initdb.d/
       - mysqldata:/var/lib/mysql/
@@ -31,6 +34,7 @@ services:
       - ${FORWARD_DB_PORT:-3306}:3306
     networks:
       - localnet
+    restart: always
 
 networks:
   localnet:
