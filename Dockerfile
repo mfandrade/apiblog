@@ -13,7 +13,8 @@ RUN composer install \
 FROM php:8-apache
 
 RUN docker-php-ext-configure opcache --enable-opcache && \
-    docker-php-ext-install pdo pdo_mysql
+    docker-php-ext-install pdo pdo_mysql && \
+    apt-get update && apt-get install sqlite3 -y && rm -rf /var/lib/apt/lists/*
 
 COPY files/opcache.ini /usr/local/etc/php/conf.d/
 COPY files/laravel.conf /etc/apache2/sites-available/
@@ -24,8 +25,7 @@ COPY --from=build --chown=1000:www-data /app/ .
 
 RUN a2enmod rewrite && \
     a2dissite 000-default && \
-    a2ensite laravel
+    a2ensite laravel && \
+    service apache2 restart
 
-RUN php artisan config:cache && \
-    php artisan route:cache
-
+EXPOSE 80

@@ -10,6 +10,8 @@ SRC := src/
 
 # A kitten dies for every change you make below this line. =^.^=
 # -----------------------------------------------------------------------------
+.DEFAULT_GOAL := help
+
 ifeq ($(wildcard $(SRC).env),)
 # default env
 APP_ENV:=local
@@ -18,53 +20,74 @@ else
 include $(SRC).env
 endif
 
-$(info INFO: environment = $(APP_ENV))
-$(info )
+DB_CONNECTION?=mysql
 
-$(SRC).env: $(SRC).env.local $(SRC).env.production $(SRC).env.$(APP_ENV)
-	@cp -f $(SRC).env.$(APP_ENV) $(SRC).env
+$(info INFO: $(APP_ENV) / $(DB_CONNECTION))
 
-cleanup: docker-compose.yaml 
-	docker-compose --env-file $(SRC).env down
-	@docker rm -f apiblog-sqlite apiblog-app-1 2>/dev/null
-	@docker container prune -f >/dev/null
-	@docker image prune -f -a >/dev/null
+$(SRC).env: $(SRC).env.local $(SRC).env.production
+	cp -f $(SRC).env.$(APP_ENV) $(SRC).env
 
-run: $(SRC).env cleanup ##- Runs the app locally with Apache2 and MySQL backend.
-	docker-compose --env-file $(SRC).env up -d
+clean: $(SRC).env docker-compose.yaml ##- Removes generated containers.
+	docker rm --force apiblog-sqlite 2>/dev/null
+	docker-compose --env-file $(SRC).env down 2>/dev/null
+
+fixperms:
+	chgrp -R www-data $(SRC)
+	find $(SRC)bootstrap/cache/ $(SRC)storage/ -type d -exec chmod 775 {} \+
+	find $(SRC) -type d -exec chmod g+s {} \+
+
+run: $(SRC).env docker-compose.yaml fixperms ##- Runs the app in background.
+	if [ "$(DB_CONNECTION)" = "sqlite" ] ; \
+	then \
+		touch $(SRC)database/database.sqlite ; \
+		docker build . --tag mfandrade/apiblog:sqlite ; \
+		docker run --env-file $(SRC).env --name apiblog-sqlite --detach \
+			--publish 80:80 \
+			--volume $(CURDIR)/$(SRC)database:/srv/laravel/database \
+			mfandrade/apiblog:sqlite ; \
+		docker exec --env-file $(SRC).env apiblog-sqlite bash -c \
+			'php artisan migrate:fresh; php artisan config:cache' ; \
+	elif [ "$(DB_CONNECTION)" = "mysql" ] ; \
+	then \
+		docker-compose --env-file $(SRC).env up --build --detach ; \
+		docker-compose --env-file $(SRC).env exec app bash -c \
+			'php artisan migrate:fresh; php artisan config:cache' ; \
+	fi ;
 
 shell: run ##- A Bash shell into the app container.
-	docker-compose --env-file $(SRC).env exec -it app bash
+	if [ "$(DB_CONNECTION)" = "sqlite" ] ; \
+	then \
+		docker exec --env-file $(SRC).env -it apiblog-sqlite \
+			bash ; \
+	elif [ "$(DB_CONNECTION)" = "mysql" ] ; \
+	then \
+		docker-compose --env-file $(SRC).env exec -it app \
+			bash ; \
+	fi ;
 
-seconds:=0 # dummy way to wait until mysql be up and running
-test-db: run ##- Asks for the user password and gets to the database client.
-	@sleep $(seconds)
-	docker-compose --env-file $(SRC).env exec -it $(DB_HOST) \
-	mysql -u$(DB_USERNAME) -p $(DB_DATABASE)
+test-db: run ##- Gets to the database client prompt.
+	if [ "$(DB_CONNECTION)" = "sqlite" ] ; \
+	then \
+		sqlite3 $(SRC)database/database.sqlite ; \
+	elif [ "$(DB_CONNECTION)" = "mysql" ] ; \
+	then \
+		docker-compose --env-file $(SRC).env exec -it $(DB_HOST) \
+			mysql -u$(DB_USERNAME) -p $(DB_DATABASE) ; \
+	fi ;
 
-SQL?=SHOW TABLES;
-test-sql: run ##- Runs SQL command in the database [SQL='SELECT ...']
-	@sleep $(seconds)
-	docker-compose --env-file $(SRC).env exec $(DB_HOST) \
-	mysql -u$(DB_USERNAME) -p$(DB_PASSWORD) $(DB_DATABASE) \
-		-e '$(SQL)' 2>/dev/null
+dump: run ##- Dumps database content in SQL format to database/schema/.
+	cd $(SRC) && \
+	php artisan schema:dump
 
-db-dump: run ##- Dumps database content in SQL format to stdout.
-	@sleep $(seconds)
-	docker-compose --env-file $(SRC).env exec -it $(DB_HOST) \
-	mysqldump -u$(DB_USERNAME) -p $(DB_DATABASE) | tee database.dump.sql
+test-api: $(SRC).env ##- Simple HTTP get requests for posts and comments.
+	cd $(SRC) && \
+		php artisan route:list --path api && \
+		curl -sL $(APP_URL)/api/comments/1/post
 
-test-api: run ##- Simple HTTP get requests for posts and comments.
-	@cd $(SRC) && \
-	php artisan route:clear && php artisan route:list && \
-	echo ---------------------------------------------------------------- && \
-	curl -sL $(APP_URL)/api/comments/1/post
-	echo ---------------------------------------------------------------- && \
-	curl -sL $(APP_URL)/api/posts/2/comments
-
-publish: run ##- Publishes mfandrade/apiblog:latest to Docker HUB (must be logged in previously).
-	git push github main && git push gitlab main
-	docker push mfandrade/apiblog:latest
+publish: run ##- Publishes generated images to Docker HUB (must be logged in previously).
+	git push github --all && git push gitlab --all
+	docker push mfandrade/apiblog:sqlite 2>/dev/null
+	docker push mfandrade/apiblog:latest 2>/dev/null
 
 help: ##- This message.
 	@echo 'USAGE: make <TARGET> [VARNAME=value]'

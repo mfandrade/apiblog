@@ -10,7 +10,7 @@ services:
       - laravel.app:127.0.0.1
       - www.laravel.app:127.0.0.1
     ports:
-      - 8000:8000
+      - 80:80
     networks:
       - localnet
     depends_on:
@@ -28,7 +28,6 @@ services:
       timeout: 10s
       retries: 3
     volumes:
-      - ./files/sql/:/docker-entrypoint-initdb.d/
       - mysqldata:/var/lib/mysql/
     ports:
       - ${FORWARD_DB_PORT:-3306}:3306
